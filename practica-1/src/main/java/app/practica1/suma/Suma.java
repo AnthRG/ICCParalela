@@ -7,15 +7,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Suma {
-    private static final int NUM_HILOS = 4;
+    private static final int NUM_HILOS = 8;
     private static final int SIZE = 1000000;
+    private static final int calentamiento = 50;
     private static long[] resultados = new long[NUM_HILOS];
+
 
     public static void main(String[] args) throws InterruptedException {
         long[] arreglo = archivoReader();
 
         SumaHilo(arreglo);
         SumaLineal(arreglo);
+
     }
 
     static void SumaLineal(long[] arreglo) {
@@ -47,7 +50,6 @@ public class Suma {
             t.start();
         }
         long sumT = 0;
-
         for (SumThread s : sumadores) {
             s.join();
             sumT += s.getSum();

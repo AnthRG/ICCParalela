@@ -14,7 +14,9 @@ class SumThread extends Thread {
         this.fin = fin;
     }
 
+    @Override
     public void run() {
+
         for (int i = inicio; i < fin; i++) {
             sum += datos[i];
         }
@@ -23,5 +25,4 @@ class SumThread extends Thread {
     public Long getSum() {
         return sum;
     }
-
 }
