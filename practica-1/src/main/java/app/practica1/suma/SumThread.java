@@ -3,34 +3,25 @@ package app.practica1.suma;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SumThread extends Thread {
-    List<Long> datos;
-    Long sum;
+class SumThread extends Thread {
+    private final long[] datos;
+    private final int inicio, fin;
+    private long sum = 0;
 
-    public SumThread(List<Long> datos) {
-        this.sum = 0L;
+    public SumThread(long[] datos, int inicio, int fin) {
         this.datos = datos;
+        this.inicio = inicio;
+        this.fin = fin;
     }
 
     public void run() {
-        for (Long s : datos) {
-            sum += (s);
+        for (int i = inicio; i < fin; i++) {
+            sum += datos[i];
         }
-    }
-
-    public List<Long> getDatos() {
-        return datos;
-    }
-
-    public void setDatos(List<Long> datos) {
-        this.datos = datos;
     }
 
     public Long getSum() {
         return sum;
     }
 
-    public void setSum(Long sum) {
-        this.sum = sum;
-    }
 }

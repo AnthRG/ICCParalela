@@ -12,13 +12,13 @@ public class Suma {
     private static long[] resultados = new long[NUM_HILOS];
 
     public static void main(String[] args) throws InterruptedException {
-        List<Long> arreglo = archivoReader();
+        long[] arreglo = archivoReader();
 
         SumaHilo(arreglo);
         SumaLineal(arreglo);
     }
 
-    static void SumaLineal(List<Long> arreglo) {
+    static void SumaLineal(long[] arreglo) {
         long suma = 0;
         long inicioTiempo = System.nanoTime();
         for (Long num : arreglo) {
@@ -29,18 +29,21 @@ public class Suma {
         System.out.printf("Tiempo de ejecucion secuencial es de: %.3f ms%n", (finTiempo - inicioTiempo) / 1000000.0);
 
     }
-
-    static void SumaHilo(List<Long> arreglo) throws InterruptedException {
+    static void SumaHilo(long[] arreglo) throws InterruptedException {
         int parte = SIZE / NUM_HILOS;
         List<SumThread> sumadores = new ArrayList<>();
 
-        long inicioTiempo = System.nanoTime();
 
         for (int i = 0; i < NUM_HILOS; i++) {
-            int inicioIdx = i * parte;
-            int finIdx = (i == NUM_HILOS - 1) ? arreglo.size() : (i + 1) * parte;
-            SumThread t = new SumThread(arreglo.subList(inicioIdx, finIdx));
+            int inicio = i * parte;
+            int fin = (i == NUM_HILOS - 1) ? SIZE : inicio + parte;
+            SumThread t = new SumThread(arreglo, inicio, fin);
             sumadores.add(t);
+        }
+
+        long inicioTiempo = System.nanoTime();
+
+        for(SumThread t : sumadores){
             t.start();
         }
         long sumT = 0;
@@ -57,13 +60,14 @@ public class Suma {
 
     }
 
-    static List<Long> archivoReader() {
-        List<Long> arreglo = new ArrayList<>();
+    static long[] archivoReader() {
+        long[] arreglo = new long[SIZE]; // SIZE = 1_000_000
+        int i = 0;
         try (BufferedReader reader = new BufferedReader(new FileReader("src/main/java/app/practica1/datos.txt"))) {
             String linea;
-            while ((linea = reader.readLine()) != null) {
+            while ((linea = reader.readLine()) != null && i < SIZE) {
                 try {
-                    arreglo.add(Long.parseLong(linea.trim()));
+                    arreglo[i++] = Long.parseLong(linea.trim());
                 } catch (NumberFormatException e) {
                     System.err.println("Línea inválida: " + linea);
                 }
